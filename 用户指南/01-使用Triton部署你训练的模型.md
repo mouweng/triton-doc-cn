@@ -33,7 +33,7 @@ Concurrency: 1, throughput: 482.8 infer/sec, latency 12613 usec
 
 **问题3: 我如何提高模型的性能?**
 
-- 为了让你知道你的模型的最佳配置，Python提供了[Model Analyzer](https://github.com/triton-inference-server/model_analyzer)工具。Model Analyzer可以自动或者手动的计算最佳的模型配置，在你的约束范围内满足你的要求。使用Model Analyzer为你的模型找到最佳的配置之后，你可以将模型的配置文件放到模型的仓库中。Model Analyzer提供了一个快速入门的指南，其中包含了一些示例。
+- 为了让你知道你的模型的最佳配置，Python提供了[Model Analyzer](https://github.com/triton-inference-server/model_analyzer)工具。Model Analyzer可以自动或者手动的计算最佳的模型配置，在你的约束范围内满足你的要求。使用Model Analyzer为你的模型找到最佳的配置之后，你可以将模型的配置文件放到模型存储库中。Model Analyzer提供了一个快速入门的指南，其中包含了一些示例。
 - 在使用Model Analyzer找到新的配置文件，运行Triton服务并在再次调用Perf Analyzer之后，在大多数情况下，模型会比默认配置情况下有更加优秀的性能。
 - Model Analyzer不会对部分参数进行自动化的搜索，因为有些参数的配置不适用于所有的模型。例如，backends可以拥有一些独有的配置选项以让它可以工作的更好。例如，ONNXRuntime Backend在对模型执行推理时，有几个参数会影响并行化的级别。如果默认的值不能提供足够好的性能，那么这些特定于Backend的选项可能是值得探究的。为了调整自定义的参数集合，Model Analyzer支持手动配置搜索。
 - 要了解关于模型配置的进一步优化的更多信息，请参阅[文档](https://docs.nvidia.com/deeplearning/triton-inference-server/user-guide/docs/user_guide/optimization.html)。
@@ -57,7 +57,7 @@ Concurrency: 1, throughput: 482.8 infer/sec, latency 12613 usec
 
 让我们以ONNX模型为例，因为ONNX是一种绝大多数框架都可以导出的通用格式。
 
-1. **创建一个模型仓库，并将我们的示例模型`densenet_onnx`下载到仓库中。**
+1. **创建一个模型存储库，并将我们的示例模型`densenet_onnx`下载到存储库中。**
 
 ```shell
 # Create model repository with placeholder for model and version 1
@@ -68,7 +68,7 @@ wget -O models/densenet_onnx/1/model.onnx
 https://contentmamluswest001.blob.core.windows.net/content/14b2744cf8d6418c87ffddc3f3127242/9502630827244d60a1214f250e3bbca7/08aed7327d694b8dbaee2c97b8d0fcba/densenet121-1.2.onnx
 ```
 
-2. **在模型仓库的``./models/densenet_onnx/config.pbtxt`路径下面为`densenet_onnx`模型创建一个最基本的模型配置。**
+2. **在模型存储库的``./models/densenet_onnx/config.pbtxt`路径下面为`densenet_onnx`模型创建一个最基本的模型配置。**
 
 > ⚠️ 这是一个简化版本的配置，本示例中暂时不需要使用到其他的配置参数。
 
@@ -106,7 +106,7 @@ docker run -ti --rm --gpus=all --network=host -v $PWD:/mnt --name triton-server 
 tritonserver --model-repository=/mnt/models
 ```
 
-> ⚠️ `$PWD:/mnt`是将主机上的当前目录挂载到容器内的`/mnt`目录。因此，如果你在`$PWD:/mnt`中创建了模型仓库，那么你将会在`/mnt/models`的容器中找到它。你可以根据需要来更改这些路径。有关其工作原理的更多信息，请参考[Docker Volumes](https://docs.docker.com/storage/volumes/)文档。
+> ⚠️ `$PWD:/mnt`是将主机上的当前目录挂载到容器内的`/mnt`目录。因此，如果你在`$PWD:/mnt`中创建了模型存储库，那么你将会在`/mnt/models`的容器中找到它。你可以根据需要来更改这些路径。有关其工作原理的更多信息，请参考[Docker Volumes](https://docs.docker.com/storage/volumes/)文档。
 
 如果模型加载成功，我们将会在输出的日志中看到我们的模型处于`READY`状态：
 
@@ -196,7 +196,7 @@ model-analyzer analyze --analysis-models=densenet_onnx
 
 6. **从Model Analyzer的结果中获取最佳配置**
 
-在上面的示例中，densenet_onnx_config_3是最优配置。让我们提取这个配置，并将其放回模型仓库中以供使用。
+在上面的示例中，densenet_onnx_config_3是最优配置。让我们提取这个配置，并将其放回模型存储库中以供使用。
 
 ```shell
 # (optional) Backup our original config.pbtxt (if any) to another directory

@@ -1,6 +1,6 @@
 # Triton架构
 
-下图显示了Triton Inference Server的架构。[模型仓库](https://docs.nvidia.com/deeplearning/triton-inference-server/user-guide/docs/user_guide/model_repository.html)是一个基于文件系统的模型存储库，Triton会将里面的模型部署并用于推理。推理请求通过[HTTP/REST、GRPC、C API](https://docs.nvidia.com/deeplearning/triton-inference-server/user-guide/docs/user_guide/architecture.html)来访问到服务，推理服务通过路由的机制调度相应的模型。Triton实现了多个调度和批处理算法，这些算法可以在逐个模型的基础上进行配置。每个模型的调度器可选地执行推理请求的批处理，然后将请求转发到与模型类型对应的后端。后端使用批处理请求中提供的输入执行推理，以生成所请求的输出。然后返回输出。
+下图显示了Triton Inference Server的架构。[模型存储库](https://docs.nvidia.com/deeplearning/triton-inference-server/user-guide/docs/user_guide/model_repository.html)是一个基于文件系统的模型存储库，Triton会将里面的模型部署并用于推理。推理请求通过[HTTP/REST、GRPC、C API](https://docs.nvidia.com/deeplearning/triton-inference-server/user-guide/docs/user_guide/architecture.html)来访问到服务，推理服务通过路由的机制调度相应的模型。Triton实现了多个调度和批处理算法，这些算法可以在逐个模型的基础上进行配置。每个模型的调度器可选地执行推理请求的批处理，然后将请求转发到与模型类型对应的后端。后端使用批处理请求中提供的输入执行推理，以生成所请求的输出。然后返回输出。
 
 Triton支持C API后端，它允许Triton扩展新的功能，例如自定义前处理和后处理操作，甚至可以自定义一个新的深度学习框架。
 
@@ -26,7 +26,7 @@ Triton提供了一个名为`instance_group`的模型配置选项，它允许每�
 
 ## 模型和调度器
 
-Triton支持多个调度和批处理算法，每个模型可以进行独立选择不同的算法。本章节介绍无状态模型、有状态模型和集成模型，以及Triton如何提供调度器来支持这些模型的类型。对于具体的模型，根据模型配置文件来决定调度程序的选择。
+Triton支持多个调度和批处理算法，每个模型可以独立选择不同的调度器。本章节介绍无状态模型、有状态模型和集成模型，以及Triton如何提供调度器来支持这些模型的类型。对于具体的模型，根据模型配置文件来决定调度器的选择。
 
 ### 无状态模型
 
@@ -44,13 +44,19 @@ RNN和一些具有内存的模型也可以是无状态的，只要它们保持�
 
 当对有状态模型进行推理请求时候，客户端应用程序必须为序列中的所有请求提供相同的相关ID，还必须标记序列的开始和结束。相关性ID允许Triton识别请求属于同一个序列。
 
-#### Control Inputs
+#### 控制输入
 
+Todo...
 
+#### 隐式状态管理
 
+Todo...
 
+#### 调度策略
 
-## Ensemble模型
+Todo...
+
+### Ensemble模型
 
 Ensemble模型（集成模型）表示了一个或者多个模型通过输入和输出连接成的模型管道。Ensemble模型可以用于封装涉及多个模型的情景，例如"数据前处理->推理->数据后处理"。这样就可以使用Ensemble模型来避免张量传输的开销，可以最大限度的减少发送到Triton的请求数量。
 
@@ -142,7 +148,7 @@ ensemble_scheduling {
 5. 检查需要新收集的Tensor的模型，并将内部请求发送给输入已准备好的模型，在本例中是分类模型和分割模型。请注意，响应的顺序是任意的，这取决于各个模型的负载和计算时间。
 6. 重复步骤3-5，直到不再发送内部请求，然后使用映射到集合输出名称的张量响应推理请求。
 
-## 额外的资源
+#### 额外的资源
 
 您可以在以下链接中找到其他端到端集成示例:
 
